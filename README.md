@@ -17,7 +17,7 @@ For Problem Set 5 I added a fifth business, **Student internship seeker**, which
 | | |
 |---|---|
 | Job | Tell me when an email shows an internship opening, or an update on an internship I applied for. |
-| Trigger | Gmail, new email matching a search: any form of the word *internship*, ignoring the bot's own alerts. |
+| Trigger | Gmail, new email matching a search: any form of the word *internship*. It skips any email whose subject contains "Internship Alert", the subject it gives its own alerts, so a forwarded alert cannot set it off again. Side effect: a portal mailer with that same subject would be skipped too. |
 | Action | Email by Zapier sends me one alert, with the matched email's subject, sender, date and a link to open it. |
 | It must never | Email anyone but me. The recipient is fixed, and there is no reply or forward step. |
 | Person in the loop | Me: I read every alert and decide whether it is an opening, an update or noise. |
@@ -44,7 +44,7 @@ Problem Set 5 does not ask for a video. If you want a recording anyway, start a 
 |---|---|---|
 | v1 and v2 | 17 Oct 2026, live by 6:37 PM | First build: a search for my date phrase, with an alert by Email by Zapier. |
 | v3, "Role filter fix" | 18 Oct 2026, 2:17 AM | Added my role words after a marketing internship fired. |
-| v4, "v4 broad internship catch" | 18 Oct 2026, about 12:14 PM | Any form of the word, openings and updates alike; ignores its own alerts; puts the matched subject in the alert. |
+| v4, "v4 broad internship catch" | 18 Oct 2026, about 12:14 PM | Any form of the word, openings and updates alike; skips subjects containing "Internship Alert"; puts the matched subject in the alert. Tested at 1:10 PM: an update and an "Intern" opening fired, a forwarded alert was skipped. |
 
 ## Evidence and privacy
 

@@ -226,6 +226,9 @@
         <tr><td>02:37:11</td><td>AI strategy internship Jan-Jun 2027</td><td>Fire</td><td>Fired</td></tr>
         <tr><td>03:04:28</td><td>A made-up email for a role I would want: AI Strategy Intern, six-month placement starting January 2027</td><td>Miss, because it uses none of my exact phrases</td><td>No run</td></tr>
         <tr><td>02:10:52 and 02:39:22</td><td>My own forwards of the alert (not planned)</td><td>Not expected</td><td>Fired, because a forward repeats the matched words</td></tr>
+        <tr><td>18 Oct, 13:11 (v4)</td><td>Your internship application: next steps (an application update)</td><td>Fire</td><td>Fired; alert "Internship Alert: Your internship application: next steps"</td></tr>
+        <tr><td>18 Oct, 13:10 sent (v4)</td><td>Fwd: Internship Alert: AI strategy internship Jan-Jun 2027 (a forwarded alert)</td><td>Be skipped</td><td>No run</td></tr>
+        <tr><td>18 Oct, 13:11 (v4)</td><td>Now hiring: AI Transformation Intern, January 2027 (says "Intern", which v3 missed)</td><td>Fire</td><td>Fired; alert "Internship Alert: Now hiring: AI Transformation Intern, January 2027"</td></tr>
       </tbody>
     </table>
   </div>
@@ -236,7 +239,7 @@
   <h2>Q1 | Where Internship MailBot sits on the map</h2>
   <div class="rows">
     <p><b>(a) My quadrant:</b> Agents run it, a person judges.</p>
-    <p><b>(b) The two questions.</b> Is there a right answer? Not for the job I need done. The Zap can check whether an email holds my exact words, but whether an internship fits me has no single right answer, and my runs show the gap: the marketing email held my date phrase and fired, though I would never apply, and a made-up email for a role I would want was missed because it was worded differently. Must people and AI work together, or can either do it alone? Together: the Zap watches and alerts me on its own, within about 75 seconds of an email arriving (sent 02:35:58, run 02:37:11), but it cannot judge fit, so the job is only done when I judge each alert.</p>
+    <p><b>(b) The two questions.</b> Is there a right answer? Not for the job I need done. The Zap can check whether an email holds my exact words, but whether an internship fits me has no single right answer, and my runs show the gap: the marketing email held my date phrase and fired, though I would never apply, and a made-up email for a role I would want was missed because it was worded differently. Must people and AI work together, or can either do it alone? Together: the Zap watches and alerts me on its own, within about 75 seconds of an email arriving (sent 02:35:58, run 02:37:11), but it cannot judge fit, so the job is only done when I judge each alert. Version 4 then caught an application update and an opening that said "Intern" within a minute, and skipped a forwarded alert, as I had written it would.</p>
     <p><b>(c) The person in the loop.</b> I stay at the gate: I read every alert and open the original posting before I apply, and I look at Zap history weekly for misses and repeats, like the extra runs my own forwards caused. The agent may watch my Gmail, match words and email me, nothing else: its recipient is fixed to my own address and it has no reply or forward step. It would move to "AI alone, with checks" if its job were only to flag an exact phrase and nothing depended on fit.</p>
     <p><b>(d) My group's view.</b> I agree with most of my group's placements, such as the sensor alerts and the order-tracking replies, where one right answer exists and a check can confirm it. I would answer the first question differently for the school-mail alert: my own agent showed that matching words fires on the wrong role and misses a good one worded differently, and "does this email concern me?" has the same problem, so it has no single right answer. I would move it to "Agents run it, a person judges", because the agent only surfaces emails and the student judges each one, and a weekly look at Zap history is too slow a check for an inbox that carries deadlines.</p>
   </div>
@@ -249,7 +252,7 @@
     <li><b>What I delegated to AI:</b> the agent card wording, the Gmail search, the page edits, the test emails, and publishing the role-word fix as version 3.</li>
     <li><b>What I checked, and how:</b> each alert arrived in my inbox with the right subject (screenshots), each run matches an entry in Zap history, and the rerun after the fix produced no run. The card was committed to the page before the first run.</li>
     <li><b>One AI error I caught:</b> the AI told me it could not send the test emails from its side. I asked "can't you do it?", and it found it could.</li>
-    <li><b>Time and cost:</b> about 3 hours, and no money spent: Gmail and Email by Zapier, on Zapier's trial, with no purchase made.</li>
+    <li><b>Time and cost:</b> about 7 to 8 hours over two days (about 3 hours to build the first versions, the rest on testing, version 4 and this page), and no money spent: Gmail and Email by Zapier, on Zapier's trial, with no purchase made.</li>
   </ul>
 </section>
 
@@ -259,7 +262,7 @@
   <div class="rows">
     <p><b>Where it fitted:</b> Internship MailBot fitted the watching part of my internship search: it caught every test email that used the words in its search and alerted me within about 75 seconds, so I no longer have to scan my inbox myself.</p>
     <p><b>Where it failed:</b> It failed wherever reading for meaning was needed, because version 3 fired on a marketing internship I would never apply for and missed a role I wanted only because it said "Intern" rather than "internship".</p>
-    <p><b>What I changed:</b> So in version 4 I widened the search to every form of the word, stopped it re-firing on its own alerts, and put each email's subject in the alert, leaving the judgment of fit to me, the student in the loop.</p>
+    <p><b>What I changed:</b> So in version 4 I widened the search to every form of the word, made it skip any email whose subject contains "Internship Alert" (the subject of its own alerts, so a forwarded alert cannot set it off again, though a portal mailer with that subject would be skipped too), and put each email's subject in the alert, leaving the judgment of fit to me, the student in the loop.</p>
   </div>
   <h3>Version history</h3>
   <div class="scroll">
@@ -268,7 +271,7 @@
       <tbody>
         <tr><td>v1 and v2</td><td>17 Oct 2026, live by 6:37 PM (first run 18:37:17)</td><td>First build: Gmail search for my date phrase, alert by Email by Zapier. Card committed at 5:57 PM, before the first run.</td></tr>
         <tr><td>v3, "Role filter fix"</td><td>18 Oct 2026, 2:17 AM</td><td>Added my role words (AI, strategy, transformation) after the marketing email fired.</td></tr>
-        <tr><td>v4, "v4 broad internship catch"</td><td>18 Oct 2026, about 12:14 PM</td><td>Any form of the word (internship, internships, intern, interns), openings and application updates alike; ignores its own alerts; puts the matched subject in the alert. Card line 1 updated before v4 ran.</td></tr>
+        <tr><td>v4, "v4 broad internship catch"</td><td>18 Oct 2026, about 12:14 PM</td><td>Any form of the word (internship, internships, intern, interns), openings and application updates alike; skips any email whose subject contains "Internship Alert", so a forwarded alert cannot set it off again (side effect: a portal mailer with that subject is skipped too); puts the matched subject in the alert. Card line 1 committed at 1:09 PM, before v4 first ran at 1:11 PM.</td></tr>
       </tbody>
     </table>
   </div>
