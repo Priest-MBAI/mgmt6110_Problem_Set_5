@@ -8,21 +8,23 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+  /* Palette for my copy: cool grey-green paper, a marigold highlighter for the walkthrough (--signal),
+     a darker amber for small accent text (--mark), and one colour per business. */
   :root {
-    --paper: #f4f1ea; --sheet: #fbf9f4; --ink: #1d1b18; --soft: #6f6a60; --rule: #d9d3c6;
-    --signal: #d4502b;
-    --farm: #4f7a3a; --strat: #3d4c8f; --jewel: #a8792a; --sentinel: #b03a5b;
+    --paper: #eef2ef; --sheet: #f9fbf9; --ink: #18231e; --soft: #5d6b64; --rule: #cfd9d3;
+    --signal: #f2c14e; --mark: #8a5a00; --signal-soft: color-mix(in srgb, var(--signal) 30%, var(--sheet)); --stripe: color-mix(in srgb, var(--ink) 5%, var(--sheet));
+    --farm: #4f7a3a; --strat: #3d4c8f; --jewel: #a8792a; --sentinel: #b03a5b; --mailbot: #2a7f8e;
     --serif: "Fraunces", Georgia, serif; --sans: "Inter", system-ui, sans-serif; --mono: "JetBrains Mono", ui-monospace, monospace;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --paper: #151412; --sheet: #1c1a17; --ink: #efe9dd; --soft: #9c958a; --rule: #34302a;
-      --farm: #86b06c; --strat: #8c9ae0; --jewel: #d9ad5c; --sentinel: #e3789a;
+      --paper: #111815; --sheet: #172019; --ink: #e4ece7; --soft: #93a39b; --rule: #2c3a33; --mark: #f2c14e; --signal-soft: color-mix(in srgb, var(--signal) 22%, var(--sheet));
+      --farm: #86b06c; --strat: #8c9ae0; --jewel: #d9ad5c; --sentinel: #e3789a; --mailbot: #6cc3d1;
     }
   }
   :root[data-theme="dark"] {
-    --paper: #151412; --sheet: #1c1a17; --ink: #efe9dd; --soft: #9c958a; --rule: #34302a;
-    --farm: #86b06c; --strat: #8c9ae0; --jewel: #d9ad5c; --sentinel: #e3789a;
+    --paper: #111815; --sheet: #172019; --ink: #e4ece7; --soft: #93a39b; --rule: #2c3a33; --mark: #f2c14e; --signal-soft: color-mix(in srgb, var(--signal) 22%, var(--sheet));
+    --farm: #86b06c; --strat: #8c9ae0; --jewel: #d9ad5c; --sentinel: #e3789a; --mailbot: #6cc3d1;
   }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--paper); color: var(--ink); font: 15px/1.55 var(--sans); -webkit-font-smoothing: antialiased; }
@@ -31,7 +33,7 @@
   header { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: end; border-bottom: 1px solid var(--ink); padding-bottom: 20px; }
   .kicker { font: 500 11px/1 var(--mono); letter-spacing: .18em; text-transform: uppercase; color: var(--soft); }
   h1 { font: 400 clamp(34px, 5vw, 58px)/1.02 var(--serif); letter-spacing: -.02em; margin: 12px 0 10px; }
-  h1 em { color: var(--signal); }
+  h1 em { color: var(--mark); }
   .lede { max-width: 58ch; color: var(--soft); margin: 0; }
   .count { font: 400 44px/1 var(--serif); text-align: right; }
   .count small { display: block; font: 500 10px/1.4 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--soft); margin-top: 6px; }
@@ -41,26 +43,29 @@
   button:hover { border-color: var(--ink); }
   button.on { background: var(--ink); color: var(--paper); border-color: var(--ink); }
   .swatch { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 7px; vertical-align: 1px; }
-  #tour { margin-left: auto; background: var(--signal); border-color: var(--signal); color: #fff; }
+  #tour { margin-left: auto; background: var(--signal); border-color: var(--signal); color: #18231e; font-weight: 600; }
+  #tour.playing { background: var(--ink); border-color: var(--ink); color: var(--paper); }
   #tour:hover { filter: brightness(1.08); }
 
   /* The map: a crosshair, not four boxes */
   .map { display: grid; grid-template-columns: 34px 1fr 1fr; grid-template-rows: auto 1fr 1fr; position: relative; }
   .colh { font: 500 11px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--soft); padding: 0 22px 12px; transition: color .3s; }
   .rowh { writing-mode: vertical-rl; transform: rotate(180deg); font: 500 11px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--soft); text-align: center; padding: 0 0 0 10px; transition: color .3s; }
-  .colh.glow, .rowh.glow { color: var(--signal); }
+  .colh.glow, .rowh.glow { color: var(--ink); background: var(--signal-soft); border-radius: 6px; }
   .q { position: relative; padding: 22px 22px 26px; min-height: 230px; background: var(--sheet); transition: background .4s; }
   .q.tl { border-right: 1px solid var(--ink); border-bottom: 1px solid var(--ink); }
   .q.tr { border-bottom: 1px solid var(--ink); }
   .q.bl { border-right: 1px solid var(--ink); }
-  .q.glow { background: color-mix(in srgb, var(--signal) 9%, var(--sheet)); }
+  .q.glow { background: var(--signal-soft); box-shadow: inset 0 0 0 3px var(--signal); }
   .qhead { display: flex; gap: 14px; align-items: baseline; margin-bottom: 4px; }
-  .num { font: 400 13px/1 var(--mono); color: var(--signal); }
+  .num { font: 400 13px/1 var(--mono); color: var(--mark); }
   .q h3 { font: 400 23px/1.15 var(--serif); margin: 0; letter-spacing: -.01em; }
   .hil { font: 400 11px/1.4 var(--mono); letter-spacing: .06em; color: var(--soft); margin: 6px 0 14px 27px; text-transform: uppercase; }
   .hil b { color: var(--ink); font-weight: 500; }
 
-  .task { display: grid; grid-template-columns: 10px 1fr auto; gap: 12px; padding: 11px 0; border-top: 1px solid var(--rule); animation: rise .45s cubic-bezier(.2,.7,.2,1); transition: opacity .3s; }
+  /* Each task is a card tinted with its business colour (--c is set by the b-* class below). */
+  .task { --c: var(--soft); display: grid; grid-template-columns: 10px 1fr auto; gap: 12px; margin-top: 10px; padding: 11px 12px; background: color-mix(in srgb, var(--c) 12%, var(--sheet)); border: 1px solid color-mix(in srgb, var(--c) 35%, transparent); border-left: 4px solid var(--c); border-radius: 10px; animation: rise .45s cubic-bezier(.2,.7,.2,1); transition: opacity .3s; }
+  .b-farm { --c: var(--farm); } .b-strat { --c: var(--strat); } .b-jewel { --c: var(--jewel); } .b-sentinel { --c: var(--sentinel); } .b-mailbot { --c: var(--mailbot); }
   .dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 7px; }
   .task .t { font-weight: 500; }
   .task .t small { display: block; font: 500 10px/1.6 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--soft); }
@@ -70,7 +75,8 @@
   .dim { opacity: .22; }
   @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
-  .note { font: 400 italic 21px/1.4 var(--serif); margin: 30px 0 22px; min-height: 60px; max-width: 70ch; padding-left: 18px; border-left: 2px solid var(--signal); }
+  .note { font: 400 italic 21px/1.4 var(--serif); margin: 30px 0 22px; min-height: 60px; max-width: 70ch; padding-left: 18px; border-left: 3px solid var(--signal); transition: background .3s; }
+  .note.live { background: var(--signal-soft); border-radius: 0 8px 8px 0; padding: 10px 14px 10px 18px; }
   .note b { font-style: normal; font-weight: 600; }
 
   .tray-h { font: 500 11px/1 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--soft); margin-bottom: 12px; display: flex; gap: 8px; align-items: center; }
@@ -78,7 +84,7 @@
   .chips { display: flex; flex-wrap: wrap; gap: 6px; }
   .chip { border: 1px solid var(--rule); background: var(--sheet); border-radius: 999px; padding: 8px 13px; font-weight: 500; }
   .chip.placed { opacity: .38; text-decoration: line-through; text-decoration-color: var(--soft); }
-  .farm { background: var(--farm); } .strat { background: var(--strat); } .jewel { background: var(--jewel); } .sentinel { background: var(--sentinel); }
+  .farm { background: var(--farm); } .strat { background: var(--strat); } .jewel { background: var(--jewel); } .sentinel { background: var(--sentinel); } .mailbot { background: var(--mailbot); }
 
   .loop { display: none; margin: 26px 0 0; padding: 20px 22px; background: var(--sheet); border: 1px solid var(--rule); }
   .loop.show { display: block; animation: rise .45s cubic-bezier(.2,.7,.2,1); }
@@ -87,12 +93,35 @@
   .cycle { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 14px; }
   .pill { border: 1px solid var(--ink); border-radius: 999px; padding: 7px 14px; font-weight: 500; }
   .pill small { display: block; font: 400 11px/1.3 var(--sans); color: var(--soft); font-weight: 400; }
-  .arrow { color: var(--signal); font-family: var(--mono); }
+  .arrow { color: var(--mark); font-family: var(--mono); }
   .tools { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .tools h5 { font: 500 11px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--soft); margin: 0 0 8px; }
   .tools code { display: block; font: 400 13px/1.9 var(--mono); }
-  .tools .gate { color: var(--signal); }
+  .tools .gate { color: var(--mark); }
   @media (max-width: 760px) { .tools { grid-template-columns: 1fr; } }
+  .tourbar { position: fixed; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); width: min(560px, calc(100% - 24px)); background: var(--ink); color: var(--paper); border-radius: 14px; padding: 12px 14px; display: grid; grid-template-columns: 1fr auto; gap: 8px 12px; align-items: center; z-index: 20; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+  .tourbar[hidden] { display: none; }
+  .tourbar b { font-weight: 600; }
+  .tourbar .track { grid-column: 1 / -1; height: 5px; border-radius: 99px; background: color-mix(in srgb, var(--paper) 22%, transparent); overflow: hidden; }
+  .tourbar .fill { height: 100%; width: 0; background: var(--signal); }
+  .tourbar button { color: var(--paper); border-color: color-mix(in srgb, var(--paper) 40%, transparent); padding: 7px 12px; }
+  .tourbar button:hover { background: var(--paper); color: var(--ink); }
+  /* My PS5 sections: each one its own card, with alternating row colours for easy reading. */
+  .panel { margin-top: 28px; background: var(--sheet); border: 1px solid var(--rule); border-radius: 14px; padding: 20px 22px; }
+  .panel h2 { font: 400 24px/1.2 var(--serif); margin: 0 0 12px; }
+  .panel h3 { font: 600 15px/1.3 var(--sans); margin: 20px 0 8px; }
+  .panel .hint { color: var(--soft); font-size: 13.5px; margin: 0 0 10px; }
+  .scroll { overflow-x: auto; }
+  .rows { list-style: none; margin: 0; padding: 0; }
+  ol.rows { counter-reset: row; }
+  ol.rows > li { counter-increment: row; }
+  ol.rows > li::before { content: counter(row) ". "; font-weight: 600; }
+  .rows > li, .rows > p { margin: 0; padding: 10px 12px; border-radius: 8px; line-height: 1.65; }
+  .rows > li:nth-child(odd), .rows > p:nth-child(odd) { background: var(--stripe); }
+  table.rows { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 14px; line-height: 1.5; }
+  table.rows th { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--rule); }
+  table.rows td { padding: 8px 10px; vertical-align: top; }
+  table.rows tbody tr:nth-child(odd) td { background: var(--stripe); }
   footer { margin-top: 40px; padding-top: 14px; border-top: 1px solid var(--rule); font: 400 11px/1.6 var(--mono); color: var(--soft); letter-spacing: .04em; }
   .toast { position: fixed; bottom: 18px; left: 50%; transform: translate(-50%, 10px); background: var(--ink); color: var(--paper); padding: 10px 16px; border-radius: 999px; font: 500 12px/1 var(--mono); opacity: 0; transition: opacity .3s, transform .3s; pointer-events: none; }
   .toast.show { opacity: 1; transform: translate(-50%, 0); }
@@ -113,24 +142,28 @@
 </head>
 <body>
 <div class="wrap">
+  <!-- Header: title, intro, and the counter of tasks placed on the map. -->
   <header>
     <div>
       <div class="kicker">MGMT 6110 · Group project · Human–AI task map</div>
       <h1>Who holds <em>the pen?</em></h1>
-      <p class="lede">A modern farm, an AI strategist, a necklace jeweller, and the agent we built to watch our school inbox. Thirteen real tasks, sorted by whether the work has one right answer and whether people and AI must do it together. Each task triggers its own Zapier workflow.</p>
+      <p class="lede">A modern farmer, an AI strategist, a necklace jeweller, and the agent we built to watch our school inbox. Thirteen group tasks, plus four from my own job as a student looking for an internship (I built one of them as a Zap, Internship MailBot), sorted by whether the work has one right answer and whether people and AI must do it together. The Run Zap buttons only log the task's payload until a Zapier hook URL is added.</p>
     </div>
-    <div class="count" id="count">0<small>of 12 placed</small></div>
+    <div class="count" id="count">0<small>of 17 placed</small></div>
   </header>
 
+  <!-- Filters: one button per business, plus the walkthrough button. -->
   <div class="bar" id="filters">
     <button class="on" data-f="all">All</button>
-    <button data-f="farm"><span class="swatch farm"></span>Modern farm</button>
+    <button data-f="farm"><span class="swatch farm"></span>Modern Farmer</button>
     <button data-f="strat"><span class="swatch strat"></span>AI strategist</button>
     <button data-f="jewel"><span class="swatch jewel"></span>Necklace jeweller</button>
     <button data-f="sentinel"><span class="swatch sentinel"></span>School mail sentinel</button>
+    <button data-f="mailbot"><span class="swatch mailbot"></span>Student internship seeker</button>
     <button id="tour">Play walkthrough</button>
   </div>
 
+  <!-- The map: the two questions make four quadrants; placed tasks appear inside as cards. -->
   <div class="map">
     <div class="corner"></div>
     <div class="colh" id="c1">↓ One right answer</div>
@@ -143,8 +176,10 @@
     <div class="q br" id="br"><div class="qhead"><span class="num">04</span><h3 data-axes="No single answer · either alone">A person decides, AI alongside</h3></div><div class="hil">Loop · <b>person makes the call</b></div></div>
   </div>
 
-  <div class="note" id="note">Pick a task below, or play the walkthrough.</div>
+  <!-- Explains the task or walkthrough step being shown; screen readers announce changes. -->
+  <div class="note" id="note" aria-live="polite">Pick a task below, or play the walkthrough.</div>
 
+  <!-- My group's School mail sentinel loop: shown only when its filter is selected. -->
   <section class="loop" id="loop">
     <h4>One email goes round the loop <span>Built twice · Zapier (instant) · Claude routine (hourly + 7 pm digest)</span></h4>
     <div class="cycle">
@@ -158,63 +193,107 @@
     </div>
   </section>
 
+  <!-- Task tray: click a chip to place that task on the map. -->
   <div class="tray-h"><span>Task tray</span><button id="all">Place all</button><button id="clear">Reset</button></div>
   <div class="chips" id="chips"></div>
   
-<section style="margin-top:32px;border:1px solid var(--rule);background:var(--sheet);border-radius:10px;padding:20px 24px">
-  <h2 style="font:400 24px/1.2 var(--serif);margin:0 0 12px">My agent card | Internship MailBot | finished 17 Oct 2026, by 6:37 PM</h2>
-  <ol style="margin:0;padding-left:20px;line-height:1.7">
-    <li><b>The job:</b> Tell me, a Master of Business AI student, when a job-alert email mentions an internship of six months starting January 2027.</li>
+<!-- ================= My Problem Set 5 sections (Alan Asman) =================
+     Everything below the task tray is mine; the map above is my group's page plus my four tasks. -->
+
+<!-- Agent card: PS5 Step 1 format, written before the first run. -->
+<section class="panel" id="agent-card">
+  <h2>My agent card | Internship MailBot | finished 17 Oct 2026, by 6:37 PM</h2>
+  <ol class="rows">
+    <li><b>The job:</b> Tell me, a Master of Business AI student, when an email shows an internship opening, or an update on an internship I applied for.</li>
     <li><b>The trigger:</b> A new email in my personal Gmail that matches the saved search, checked about every 15 minutes.</li>
     <li><b>The tools:</b> Gmail, new email matching a search (trigger); Email by Zapier, Send Outbound Email (action).</li>
     <li><b>It must never:</b> Email anyone but me. The action's recipient is fixed to my own address, and it has no reply or forward step.</li>
     <li><b>Where a person checks:</b> I read every alert and open the original posting before I apply, and I look at Zap history weekly.</li>
   </ol>
 </section>
-  
-<section style="margin-top:32px;border:1px solid var(--rule);background:var(--sheet);border-radius:10px;padding:20px 24px">
-  <h2 style="font:400 24px/1.2 var(--serif);margin:0 0 12px">Q1 evidence | Internship MailBot</h2>
-  <h3 style="font:500 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--soft);margin:18px 0 8px">Runs, checked against Zap history (Singapore time)</h3>
-  <div style="overflow-x:auto">
-  <table style="border-collapse:collapse;width:100%;font-size:14px;line-height:1.5">
-    <tr style="text-align:left;border-bottom:1px solid var(--rule)"><th style="padding:6px 10px 6px 0">When</th><th style="padding:6px 10px">What I sent</th><th style="padding:6px 10px">I expected</th><th style="padding:6px 0 6px 10px">Result in Zap history</th></tr>
-    <tr style="border-bottom:1px solid var(--rule)"><td style="padding:6px 10px 6px 0">17 Oct, 18:37:17</td><td style="padding:6px 10px">My first test email</td><td style="padding:6px 10px">Fire</td><td style="padding:6px 0 6px 10px">Fired</td></tr>
-    <tr style="border-bottom:1px solid var(--rule)"><td style="padding:6px 10px 6px 0">18 Oct, 02:08:36</td><td style="padding:6px 10px">Marketing internship Jan-Jun 2027 (tricky case)</td><td style="padding:6px 10px">Fire anyway, because the search reads words, not fit</td><td style="padding:6px 0 6px 10px">Fired</td></tr>
-    <tr style="border-bottom:1px solid var(--rule)"><td style="padding:6px 10px 6px 0">02:17:37, after fix v3</td><td style="padding:6px 10px">The same marketing email, sent again</td><td style="padding:6px 10px">No run</td><td style="padding:6px 0 6px 10px">No run</td></tr>
-    <tr style="border-bottom:1px solid var(--rule)"><td style="padding:6px 10px 6px 0">02:37:11</td><td style="padding:6px 10px">AI strategy internship Jan-Jun 2027</td><td style="padding:6px 10px">Fire</td><td style="padding:6px 0 6px 10px">Fired</td></tr>
-    <tr><td style="padding:6px 10px 6px 0">02:10:52 and about 02:39</td><td style="padding:6px 10px">My own forwards of the alert (not planned)</td><td style="padding:6px 10px">Not expected</td><td style="padding:6px 0 6px 10px">Fired, because a forward repeats the matched words</td></tr>
-  </table>
-  </div>
-  <p style="margin:10px 0 0;color:var(--soft);font-size:13.5px">My expectation for each planned test is written in the body of the email itself, so its timestamp shows I wrote it first.</p>
 
-  <h3 style="font:500 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--soft);margin:22px 0 8px">Collaboration log</h3>
-  <ul style="margin:0;padding-left:20px;line-height:1.7">
+<!-- Runs: every run of my Zap, checked against Zap history. -->
+<section class="panel" id="runs">
+  <h2>Runs, checked against Zap history</h2>
+  <p class="hint">Singapore time; the JSON file stores UTC, 8 hours behind. My expectation for each planned test is written in the body of the email itself, so its timestamp shows I wrote it first.</p>
+  <div class="scroll">
+    <table class="rows">
+      <thead><tr><th>When</th><th>What I sent</th><th>I expected</th><th>Result in Zap history</th></tr></thead>
+      <tbody>
+        <tr><td>17 Oct, 18:37:17</td><td>An alert from my Week 7 Zap that quoted a test email (not planned)</td><td>Not planned</td><td>Fired, because the quoted text matched my search</td></tr>
+        <tr><td>18 Oct, 02:08:36</td><td>Marketing internship Jan-Jun 2027 (tricky case)</td><td>Fire anyway, because the search reads words, not fit</td><td>Fired</td></tr>
+        <tr><td>02:17:37, after fix v3</td><td>The same marketing email, sent again</td><td>No run</td><td>No run</td></tr>
+        <tr><td>02:37:11</td><td>AI strategy internship Jan-Jun 2027</td><td>Fire</td><td>Fired</td></tr>
+        <tr><td>03:04:28</td><td>A made-up email for a role I would want: AI Strategy Intern, six-month placement starting January 2027</td><td>Miss, because it uses none of my exact phrases</td><td>No run</td></tr>
+        <tr><td>02:10:52 and 02:39:22</td><td>My own forwards of the alert (not planned)</td><td>Not expected</td><td>Fired, because a forward repeats the matched words</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Q1 (a) to (d), as PS5 Step 3 asks. -->
+<section class="panel" id="q1">
+  <h2>Q1 | Where Internship MailBot sits on the map</h2>
+  <div class="rows">
+    <p><b>(a) My quadrant:</b> Agents run it, a person judges.</p>
+    <p><b>(b) The two questions.</b> Is there a right answer? Not for the job I need done. The Zap can check whether an email holds my exact words, but whether an internship fits me has no single right answer, and my runs show the gap: the marketing email held my date phrase and fired, though I would never apply, and a made-up email for a role I would want was missed because it was worded differently. Must people and AI work together, or can either do it alone? Together: the Zap watches and alerts me on its own, within about 75 seconds of an email arriving (sent 02:35:58, run 02:37:11), but it cannot judge fit, so the job is only done when I judge each alert.</p>
+    <p><b>(c) The person in the loop.</b> I stay at the gate: I read every alert and open the original posting before I apply, and I look at Zap history weekly for misses and repeats, like the extra runs my own forwards caused. The agent may watch my Gmail, match words and email me, nothing else: its recipient is fixed to my own address and it has no reply or forward step. It would move to "AI alone, with checks" if its job were only to flag an exact phrase and nothing depended on fit.</p>
+    <p><b>(d) My group's view.</b> I agree with most of my group's placements, such as the sensor alerts and the order-tracking replies, where one right answer exists and a check can confirm it. I would answer the first question differently for the school-mail alert: my own agent showed that matching words fires on the wrong role and misses a good one worded differently, and "does this email concern me?" has the same problem, so it has no single right answer. I would move it to "Agents run it, a person judges", because the agent only surfaces emails and the student judges each one, and a weekly look at Zap history is too slow a check for an inbox that carries deadlines.</p>
+  </div>
+</section>
+
+<!-- Collaboration log. -->
+<section class="panel" id="log">
+  <h2>Collaboration log</h2>
+  <ul class="rows">
     <li><b>What I delegated to AI:</b> the agent card wording, the Gmail search, the page edits, the test emails, and publishing the role-word fix as version 3.</li>
     <li><b>What I checked, and how:</b> each alert arrived in my inbox with the right subject (screenshots), each run matches an entry in Zap history, and the rerun after the fix produced no run. The card was committed to the page before the first run.</li>
     <li><b>One AI error I caught:</b> the AI told me it could not send the test emails from its side. I asked "can't you do it?", and it found it could.</li>
     <li><b>Time and cost:</b> about 3 hours, and no money spent: Gmail and Email by Zapier, on Zapier's trial, with no purchase made.</li>
   </ul>
+</section>
 
-  <h3 style="font:500 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--soft);margin:22px 0 8px">Reflection</h3>
-  <p style="margin:0;line-height:1.7">The Zap fitted the job where the wording is predictable: it caught the emails that used my exact date phrase and role words within about 75 seconds and sent me an alert. It failed on judgment, because a marketing role I would never apply for fired the same alert, and it also fired again when I forwarded its own alert, since the search reads words and cannot tell a role I want from one I do not. I would add my role words from the start, use portal alerts that send one job per email, and move to a Claude routine that reads each posting for fit while I stay the one who decides whether to apply.</p>
+<!-- Reflection: three sentences, one per row, then the version history of the Zap. -->
+<section class="panel" id="reflection">
+  <h2>Reflection</h2>
+  <div class="rows">
+    <p><b>Where it fitted:</b> Internship MailBot fitted the watching part of my internship search: it caught every test email that used the words in its search and alerted me within about 75 seconds, so I no longer have to scan my inbox myself.</p>
+    <p><b>Where it failed:</b> It failed wherever reading for meaning was needed, because version 3 fired on a marketing internship I would never apply for and missed a role I wanted only because it said "Intern" rather than "internship".</p>
+    <p><b>What I changed:</b> So in version 4 I widened the search to every form of the word, stopped it re-firing on its own alerts, and put each email's subject in the alert, leaving the judgment of fit to me, the student in the loop.</p>
+  </div>
+  <h3>Version history</h3>
+  <div class="scroll">
+    <table class="rows">
+      <thead><tr><th>Version</th><th>When (Singapore time)</th><th>What changed</th></tr></thead>
+      <tbody>
+        <tr><td>v1 and v2</td><td>17 Oct 2026, live by 6:37 PM (first run 18:37:17)</td><td>First build: Gmail search for my date phrase, alert by Email by Zapier. Card committed at 5:57 PM, before the first run.</td></tr>
+        <tr><td>v3, "Role filter fix"</td><td>18 Oct 2026, 2:17 AM</td><td>Added my role words (AI, strategy, transformation) after the marketing email fired.</td></tr>
+        <tr><td>v4, "v4 broad internship catch"</td><td>18 Oct 2026, about 12:14 PM</td><td>Any form of the word (internship, internships, intern, interns), openings and application updates alike; ignores its own alerts; puts the matched subject in the alert. Card line 1 updated before v4 ran.</td></tr>
+      </tbody>
+    </table>
+  </div>
 </section>
 
   <footer>Quadrant framework and agent loop: Roh, S. (2026) MGMT 6110 Week 7, <i>The Map of Human-AI Collaboration</i> and <i>Building AI Agents I</i>, SMU. · Agrawal, Gans &amp; Goldfarb (2018) <i>Prediction Machines</i>, HBR Press. · Davenport &amp; Kirby (2016) <i>Only Humans Need Apply</i>, Harper Business. Tasks, placements and design are the group's own.</footer>
 </div>
+<!-- Walkthrough status bar: visible only while the walkthrough plays. -->
+<div class="tourbar" id="tourbar" hidden role="status"><span id="tourstep">Walkthrough playing</span><button id="tourstop">Stop</button><div class="track"><div class="fill" id="tourfill"></div></div></div>
 <div class="toast" id="toast"></div>
 
 <script>
 // Paste the Zapier "Catch Hook" URL here (Webhooks by Zapier → Catch Hook).
 const ZAPIER_HOOK_URL = "";
 
+// Quadrant ids and their exact titles from the map.
 const Q = {
   tl: "A person leads, AI inside",
   tr: "Agents run it, a person judges",
   bl: "AI alone, with checks",
   br: "A person decides, AI alongside",
 };
-const BIZ = { farm: "Modern farm", strat: "AI strategist", jewel: "Necklace jeweller", sentinel: "School mail sentinel" };
+const BIZ = { farm: "Modern Farmer", strat: "AI strategist", jewel: "Necklace jeweller", sentinel: "School mail sentinel", mailbot: "Student internship seeker" };
 
+// Every task: business (b), quadrant (q), the task (t) and why it sits there (why).
 const TASKS = [
   { b: "farm",  q: "bl", t: "Flag sensor readings outside thresholds", why: "Soil moisture, temperature and feed levels have fixed safe ranges, so AI can check every reading alone; a weekly spot-check confirms the thresholds." },
   { b: "farm",  q: "tl", t: "Diagnose crop disease from a leaf photo", why: "There is a right diagnosis, but the AI's image match needs the farmer's field knowledge to confirm it before spraying." },
@@ -229,6 +308,12 @@ const TASKS = [
   { b: "jewel", q: "tr", t: "Test ad and photo variants", why: "No single best ad; agents generate and A/B-test variants, the jeweller judges which fit the brand." },
   { b: "jewel", q: "br", t: "Price a custom or new-collection necklace", why: "Pricing mixes craft, brand and margin; AI shows comparable prices and metal costs, the jeweller sets the price." },
   { b: "sentinel", q: "bl", t: "Alert me when school email mentions MBAI or my professors", why: "Whether an email names MBAI, a professor or me has one right answer, and a student could scan the inbox by hand. The agent does it alone and cannot reply, forward or delete; the 7 pm digest and a weekly look at Zap History are the checks." },
+  // Student internship seeker: my own job, split into four tasks, one per quadrant.
+  // Only the top-right task is built (my Zap, Internship MailBot); the other three show where AI could help next.
+  { b: "mailbot", q: "bl", t: "Flag any email that contains the word internship (the Zap's matching step)", why: "Whether an email contains the word has one right answer, and the Zap does it alone; I check its runs against Zap history." },
+  { b: "mailbot", q: "tl", t: "Update my internship database after each application I send", why: "Each entry (company, role, date sent, status) must be exactly right, because it is the context my agent works from. I lead and record what I sent; AI fills in the details from my sent email, and I check every entry." },
+  { b: "mailbot", q: "br", t: "Decide which internship offer to accept", why: "A judgement on fit, pay, growth and timing. AI lays the offers side by side; I make the call." },
+  { b: "mailbot", q: "tr", t: "Act on each internship alert: opening, update or noise (built: Internship MailBot)", why: "Which alerts matter has no single right answer. The Zap watches my Gmail and alerts me on its own; I judge each alert against my internship database and decide what to do." },
 ];
 
 const $ = (id) => document.getElementById(id);
@@ -250,12 +335,13 @@ function runZap(task) {
     .catch(() => toast("Zap call failed · check the hook URL"));
 }
 
+// Places one task on the map as a card and explains it in the note.
 function place(i) {
   const task = TASKS[i];
   if (!placed.has(i)) {
     placed.add(i);
     const row = document.createElement("div");
-    row.className = "task"; row.dataset.b = task.b;
+    row.className = "task b-" + task.b; row.dataset.b = task.b;
     row.innerHTML = `<span class="dot ${task.b}"></span><span class="t"><small>${BIZ[task.b]}</small>${task.t}<span class="why">${task.why}</span></span>`;
     const btn = document.createElement("button");
     btn.textContent = "Run Zap →"; btn.onclick = () => runZap(task);
@@ -296,11 +382,35 @@ function setFilter(f) {
 
 // Step-by-step walkthrough for the video recording.
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-function glow(ids) { document.querySelectorAll(".glow").forEach((e) => e.classList.remove("glow")); ids.forEach((id) => $(id).classList.add("glow")); }
+function glow(ids) {
+  document.querySelectorAll(".glow").forEach((e) => e.classList.remove("glow"));
+  ids.forEach((id) => $(id).classList.add("glow"));
+  const first = ids.length ? $(ids[0]) : null;
+  if (touring && first && first.scrollIntoView) first.scrollIntoView({ block: "center", behavior: reduceMotion ? "auto" : "smooth" });
+}
+
+let stopTour = false, beatNo = 0, beatTotal = 0;
+const reduceMotion = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+function startBar(total) {
+  beatNo = 0; beatTotal = total; $("tourbar").hidden = false;
+  $("tour").textContent = "Stop walkthrough"; $("tour").classList.add("playing"); $("note").classList.add("live");
+}
+function endBar() {
+  $("tourbar").hidden = true;
+  $("tour").textContent = "Play walkthrough"; $("tour").classList.remove("playing"); $("note").classList.remove("live");
+}
+async function beat(ms) {
+  beatNo += 1;
+  $("tourstep").innerHTML = `<b>Walkthrough playing.</b> Step ${beatNo} of ${beatTotal}: read the highlighted part.`;
+  const f = $("tourfill"); f.style.transition = "none"; f.style.width = "0%"; void f.offsetWidth;
+  f.style.transition = `width ${ms}ms linear`; f.style.width = "100%";
+  const end = Date.now() + ms;
+  while (Date.now() < end && !stopTour) await sleep(100);
+}
 
 async function tour() {
   if (touring) return;
-  touring = true; clearAll(); setFilter("all");
+  touring = true; stopTour = false; clearAll(); setFilter("all");
   const steps = [
     [["c1"], "First question: does the work have <b>one right answer</b>…"],
     [["c2"], "…or <b>no single right answer</b>?"],
@@ -311,24 +421,30 @@ async function tour() {
     [["tr"], "<b>02 · Agents run it, a person judges.</b> Many good answers. Agents produce, a person approves before it ships."],
     [["br"], "<b>04 · A person decides, AI alongside.</b> A judgement call. AI briefs, the person decides."],
   ];
-  for (const [ids, text] of steps) { glow(ids); note(text); await sleep(3200); }
-  for (const b of Object.keys(BIZ)) {
-    setFilter(b); glow([]); note(`Now, the <b>${BIZ[b].toLowerCase()}</b>.`); await sleep(2200);
+  startBar(steps.length + Object.keys(BIZ).length + TASKS.length);
+  for (const [ids, text] of steps) { if (stopTour) break; glow(ids); note(text); await beat(3200); }
+  outer: for (const b of Object.keys(BIZ)) {
+    if (stopTour) break;
+    setFilter(b); glow([]); note(`Now, the <b>${BIZ[b].toLowerCase()}</b>.`); await beat(2200);
     for (let i = 0; i < TASKS.length; i++) {
       if (TASKS[i].b !== b) continue;
-      glow([TASKS[i].q]); place(i); await sleep(4200);
+      if (stopTour) break outer; glow([TASKS[i].q]); place(i); await beat(4200);
     }
   }
   setFilter("all"); glow([]);
-  note("Every business has work in all four quadrants, so we place the <b>task</b>, never the whole job. Each Run Zap button fires that task's workflow.");
-  touring = false;
+  note(stopTour
+    ? "Walkthrough stopped. Pick a task below, or play it again."
+    : "Every business has work in all four quadrants, so we place the <b>task</b>, never the whole job. The Run Zap buttons log each task's payload.");
+  endBar(); touring = false; stopTour = false;
 }
 
 document.querySelectorAll("#filters [data-f]").forEach((b) => (b.onclick = () => setFilter(b.dataset.f)));
-$("tour").onclick = tour;
+$("tour").onclick = () => (touring ? (stopTour = true) : tour());
+$("tourstop").onclick = () => { stopTour = true; };
 $("all").onclick = () => TASKS.forEach((_, i) => place(i));
 $("clear").onclick = clearAll;
 render();
+TASKS.forEach((t, i) => { if (t.b === "mailbot") place(i); });
 </script>
 </body>
 </html>
